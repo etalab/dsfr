@@ -20,6 +20,11 @@ function uniqueId (module) {
   return `${module}-${count}`;
 }
 
+const imgToBase64 = (path, format = 'png') => {
+  const img = fs.readFileSync(path, { encoding: 'base64' });
+  return `data:image/${format};base64,${img}`;
+};
+
 const buildExample = (pck) => {
   const pagePath = root('tool/example/example.ejs');
   const page = fs.readFileSync(pagePath, {
@@ -109,6 +114,7 @@ const buildStandaloneExample = (pck) => {
   });
   const html = ejs.render(page, {
     ...pck,
+    imgToBase64: path => imgToBase64(pck.standalone.example.src.substring(0, pck.standalone.example.src.indexOf('index.ejs')) + path),
     path: root(pck.standalone.example.path),
     root: root.toString(),
     isStandalone: true
